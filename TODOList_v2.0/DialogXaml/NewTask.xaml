@@ -1,0 +1,166 @@
+﻿<Window x:Class="TODOList.DialogXaml.NewTask"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TODOList.DialogXaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:custom="clr-namespace:TODOList.Logic"
+        mc:Ignorable="d"
+        x:Name="ntDialog"
+        Title="New Task" Height="390" Width="350" ResizeMode="NoResize">
+    <Window.Resources>
+        <custom:DataConverter x:Key="myDateConverter" />
+    </Window.Resources>
+
+    <Grid Height="390" Width="350" x:Name="TaskGrid">
+        <Label Margin="16,5,266,358">Task name</Label>
+        <TextBox x:Name="tbName" Margin="99,7,86,358" MaxLength="50">
+            <TextBox.Text>
+                <Binding Path="TaskName" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Label Margin="16,39,230,320">Short description</Label>
+        <TextBox x:Name="tbSDesc" Margin="120,38,22,325" MaxLength="50">
+            <TextBox.Text>
+                <Binding Path="ShortDescription" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Label Margin="16,73,230,289">Long description</Label>
+        <TextBox x:Name="tbLDesc" Margin="16,106,22,181" MaxLength="150">
+            <TextBox.Text>
+                <Binding Path="LongDescription" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Label Margin="16,224,266,139">Start time</Label>
+        <DatePicker x:Name="dpSDate" IsDropDownOpen="False" Margin="99,224,120,139" SelectedDate="{x:Static system:DateTime.Now}">
+            <DatePicker.DisplayDate>
+                <Binding Path="Start" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </DatePicker.DisplayDate>
+            <DatePicker.Style>
+                <Style TargetType="{x:Type DatePicker}">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DatePicker.Style>
+        </DatePicker>
+        <Label Margin="16,269,266,94">Finish time</Label>
+        <DatePicker x:Name="dpFDate" IsDropDownOpen="False" Margin="99,269,120,94" 
+                    SelectedDate="{x:Static system:DateTime.Now}" DateValidationError="DpFDate_DateValidationError">
+            <DatePicker.DisplayDate>
+                <Binding Path="Finish" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </DatePicker.DisplayDate>
+            <DatePicker.Style>
+                <Style TargetType="{x:Type DatePicker}">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DatePicker.Style>
+        </DatePicker>
+        <Label Margin="16,317,278,48">Person</Label>
+        <TextBox x:Name="tbPerson" Margin="99,317,120,48" MaxLength="30">
+            <TextBox.Text>
+                <Binding Path="BufferResponsible" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip"
+                    Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+        <Button x:Name="bSave" Margin="254,224,22,139" Click="Save_Click" Content="Save">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=tbName, Path=Text.Length}" Value="0">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=tbPerson, Path=Text.Length}" Value="0">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+
+                        <!--<DataTrigger Binding="{Binding Path=SelectedDate, RelativeSource={RelativeSource Self}, Converter={StaticResource myDateConverter}}" 
+                                     Value="1">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>-->
+
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button x:Name="bCancel" Margin="254,269,22,94" Click="Cancel_Click" Content="Cancel">
+        </Button>
+
+        <!--<CheckBox x:Name="cbNextTask" Content="Next task" Margin="251,313,22,60">
+            <CheckBox.Style>
+                <Style TargetType="CheckBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=cbChildTask, Path=IsChecked}" Value="False">
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ElementName=cbChildTask, Path=IsChecked}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="IsChecked" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </CheckBox.Style>
+        </CheckBox>
+        <CheckBox x:Name="cbChildTask" Content="Child task" Margin="251,330,22,43">
+
+        </CheckBox>-->
+    </Grid>
+</Window>
