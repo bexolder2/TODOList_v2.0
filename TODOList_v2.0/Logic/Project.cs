@@ -11,7 +11,6 @@ namespace TODOList.Logic
     public class Project : IDataErrorInfo
     {
         public string ProjectName { get; set; }
-        //public Dictionary<int, Task> Root { get; set; }
         public List<Task> Root { get; set; }
 
         public Project()

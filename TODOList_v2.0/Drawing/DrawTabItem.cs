@@ -172,7 +172,7 @@ namespace TODOList.Drawing
                 if (nv.pages_.Count != 0)
                     nv.frame_.frame.Navigate(nv.pages_[0][0].page);
                 SetLabelText();
-                MessageBox.Show($"Invalidate y:{nv.CurrentYear} p:{nv.CurrentPage} counter:{nv.pages_.Count}");
+                //MessageBox.Show($"Invalidate y:{nv.CurrentYear} p:{nv.CurrentPage} counter:{nv.pages_.Count}");
             };
 
             TabGrid.Children.Add(bBack);

@@ -107,7 +107,7 @@ namespace TODOList
                         }
                     }
                 }
-                Thread.Sleep(5000); //TODO: set 5-10 minutes
+                Thread.Sleep(5000);
             }
         }
 
@@ -134,15 +134,17 @@ namespace TODOList
                 MessageBox.Show($"Deadline {task.TaskName} coming to an end.");
             }
 
-            if (task.Finish < DateTime.Now)
+            if (task.Finish.Date < DateTime.Now.Date)
             {
-                MessageBox.Show($"{task.TaskName} - Red");
-                int year = GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.CurrentYear;
-                int month = GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.CurrentPage;
-                if (GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.pages_.Count > 0)
+                if (task.TaskStatus != Status.Finish && task.TaskStatus != Status.Overdue)
                 {
-                    GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].
-                        nv.pages_[year][month].canvas.SearchRectForFill(StatusColor.Red, task.TaskName);
+                    int year = GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.CurrentYear;
+                    int month = GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.CurrentPage;
+                    if (GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].nv.pages_.Count > 0)
+                    {
+                        GlobalVariables.DrawingTabControl.tabItems[Dispatcher.Invoke(() => GlobalVariables.DrawingTabControl.GetTabItemIndex())].
+                            nv.pages_[year][month].canvas.SearchRectForFill(StatusColor.Red, task.TaskName);
+                    }
                 }
             }
         }

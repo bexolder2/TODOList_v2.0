@@ -12,6 +12,8 @@ namespace TODOList.Drawing.Navigation
 {
     public class Canvases
     {
+        private object locker;
+
         private List<SolidColorBrush> _Brushes;
 
         public ScrollViewer _Scroll { get;  set; }//private
@@ -39,6 +41,8 @@ namespace TODOList.Drawing.Navigation
 
         public Canvases(Frames fr, int year, int month)
         {
+            locker = new object();
+
             _Brushes = new List<SolidColorBrush>();
             InitializeBrushes();
             _Scroll = new ScrollViewer();
@@ -257,20 +261,23 @@ namespace TODOList.Drawing.Navigation
 
         public void SearchRectForFill(StatusColor color, string Name)
         {
-            char trimSymbol = ' ';
-            for (int i = 0; i < _Rectangles.Count; ++i)
+            lock (locker)
             {
-                foreach (var rt in _Rectangles)
+                char trimSymbol = ' ';
+                for (int i = 0; i < _Rectangles.Count; ++i)
                 {
-                    for (int j = 0; j < rt.Count; ++j)
+                    foreach (var rt in _Rectangles)
                     {
-                        if (rt[j].Count > 0)
+                        for (int j = 0; j < rt.Count; ++j)
                         {
-                            Dispatcher.CurrentDispatcher.Invoke(() => FillRectangle(rt[j].Find(x => x.Name == Name.Trim(trimSymbol)), color));
-                        }       
+                            if (rt[j].Count > 0)
+                            {
+                                Application.Current.Dispatcher.Invoke(() => FillRectangle(rt[j].Find(x => x.Name == Name.Trim(trimSymbol)), color));
+                            }
+                        }
                     }
                 }
-            }
+            }  
         }
 
         private void CreateTextBlock(string text)
@@ -349,21 +356,21 @@ namespace TODOList.Drawing.Navigation
 
         private void AddRectOnCurrentPage(int year, int month, string RectName)
         {
-            string writePath = @"E:\Download\logs.txt";
-            string text = $"Year: {year}  Month: {month}  Name: {RectName}";
-            using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
-            {
-                sw.WriteLine(text);
-                sw.WriteLine("");
+            //string writePath = @"E:\Download\logs.txt";
+            //string text = $"Year: {year}  Month: {month}  Name: {RectName}";
+            //using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
+            //{
+            //    sw.WriteLine(text);
+            //    sw.WriteLine("");
 
-                for (int i = 0; i < _Rectangles.Count; ++i)
-                {
-                    for(int j = 0; j < _Rectangles[i].Count; ++j)
-                    {
-                        sw.WriteLine($"Year: {i}  Month: {j} Count: {_Rectangles[i][j].Count}");
-                    }
-                }
-            }
+            //    for (int i = 0; i < _Rectangles.Count; ++i)
+            //    {
+            //        for(int j = 0; j < _Rectangles[i].Count; ++j)
+            //        {
+            //            sw.WriteLine($"Year: {i}  Month: {j} Count: {_Rectangles[i][j].Count}");
+            //        }
+            //    }
+            //}
 
             if (_Rectangles[year][month].Count != 0)
                 if(_Rectangles[year][month].Find(x => x.Name == RectName) != null)
