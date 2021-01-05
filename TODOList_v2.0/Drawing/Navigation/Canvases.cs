@@ -215,7 +215,6 @@ namespace TODOList.Drawing.Navigation
         private void CreateCheckBoxes(CheckBoxType cbt, Logic.Task task)
         {
             CheckBox cb = new CheckBox();
-            cb.IsChecked = false;
             cb.Name = SetControlName<CheckBox>(cb, task.TaskName);
             
             switch (cbt)
@@ -233,7 +232,11 @@ namespace TODOList.Drawing.Navigation
                             SearchRectForFill(StatusColor.Green, task.TaskName);
                             task.SetStatus(Status.Start);
                         }
-                    };                 
+                    };
+                    if(task.TaskStatus == Status.Finish)
+                        cb.IsChecked = true;
+                    else
+                        cb.IsChecked = false;
                     SetCheckBoxMargin(cb, XForCbPerf, YForLines - 17);
                     _CheckBoxesPerf.Add(cb);
                     _Canvas.Children.Add(cb);
@@ -252,6 +255,10 @@ namespace TODOList.Drawing.Navigation
                             task.SetStatus(Status.Start);
                         }
                     };
+                    if (task.TaskStatus == Status.Stopped)
+                        cb.IsChecked = true;
+                    else
+                        cb.IsChecked = false;
                     SetCheckBoxMargin(cb, XForCbPause, YForLines - 17);
                     _CheckBoxesPause.Add(cb);
                     _Canvas.Children.Add(cb);
@@ -514,10 +521,32 @@ namespace TODOList.Drawing.Navigation
         private void SearchAndFill(Pages page, int year, int month, Logic.Task child)
         {
             List<Rectangle> results = page.canvas._Rectangles[year][month].FindAll(x => x.Name == child.TaskName);
+
+            if(child.TaskStatus == Status.Stopped)
+            {
+                CheckBoxStatus(page, child, true, false);
+            }     
+            if(child.TaskStatus == Status.Finish)
+            {
+                CheckBoxStatus(page, child, false, true);
+            }
+            if(child.TaskStatus == Status.Start)
+            {
+                CheckBoxStatus(page, child, false, false);
+            }
+                
             foreach (var item in results)
             {
                 FillRectangle(item, child.TaskStatusColor);
             }
+        }
+
+        private void CheckBoxStatus(Pages page, Logic.Task child, bool pauseStatus, bool perfStatus)
+        {
+            List<CheckBox> resultsCBPause = page.canvas._CheckBoxesPause.FindAll(x => x.Name == child.TaskName);
+            List<CheckBox> resultsCBPerf = page.canvas._CheckBoxesPerf.FindAll(x => x.Name == child.TaskName);
+            resultsCBPause[0].IsChecked = pauseStatus;
+            resultsCBPerf[0].IsChecked = perfStatus;
         }
     }
 }
